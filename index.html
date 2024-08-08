@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selenium Test Page</title>
+    <style>
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <h1>Selenium Test Page</h1>
+    <button onclick="writeMessage('Button 1 clicked')">Button 1</button>
+    <button onclick="writeMessage('Button 2 clicked')">Button 2</button>
+    <button onclick="writeMessage('Button 3 clicked')">Button 3</button>
+    <div id="output"></div>
+
+    <script>
+        function writeMessage(message) {
+            document.getElementById('output').innerText = message;
+        }
+    </script>
+</body>
+</html>
