@@ -105,7 +105,7 @@ def click_button(driver, button_id):
     button = WebDriverWait(driver, 20).until(
         EC.presence_of_element_located((By.ID, button_id))
     )
-    button = driver.find_element(By.ID, config.BUTTON_ID_SESSION_BEGIN)
+    button = driver.find_element(By.ID, config.button_id)
     driver.execute_script("arguments[0].click();", button)
     time.sleep(10)
 
