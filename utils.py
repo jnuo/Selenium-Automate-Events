@@ -12,6 +12,9 @@ def setup_chrome_driver():
     chrome_options = Options()
     chrome_options.add_argument(f"user-data-dir={config.CHROME_PROFILE_PATH}")
 
+    # options = webdriver.ChromeOptions()
+    # options.add_argument(f"user-data-dir={config.CHROME_PROFILE_PATH}/Default")
+    
     # Set up the webdriver
     service = Service(executable_path=config.CHROMEDRIVER_PATH)
     driver = webdriver.Chrome(service=service, options=chrome_options)
@@ -47,7 +50,7 @@ def update_input_value(driver, input_id, value):
     input_field = WebDriverWait(driver, 20).until(
         EC.presence_of_element_located((By.ID, input_id))
     )
-    # scroll_to_element(driver, input_field)
+    scroll_to_element(driver, input_field)
     time.sleep(1)
     input_field.clear()
     input_field.send_keys(value)

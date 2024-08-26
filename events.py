@@ -55,7 +55,6 @@ def appError(driver, pageCategory, page, errorName, errorDescription, errorMetad
 
 # App Analytics Custom Event: logAppUIError
 def appUIError(driver, pageCategory, page, errorName, errorDescription, uiErrorHeader, uiErrorBody):
-    """Scrolls to the 'Session Begin' section."""
     scroll_to_text(driver, config.TEXT_APP_UI_ERROR)
     time.sleep(1)
     update_input_value(driver, "appUIErrorEventDimensionValue1", pageCategory)
@@ -68,13 +67,33 @@ def appUIError(driver, pageCategory, page, errorName, errorDescription, uiErrorH
     click_button(driver, config.BUTTON_ID_APP_UI_ERROR)
 
 # App Analytics Custom Event: appLoginResult
-def appLoginResult():
-    return 0
+def appLoginResult(driver, loginStatus, loginType, errorName, errorDescription):
+    scroll_to_text(driver, config.TEXT_LOGIN_RESULT)
+    time.sleep(1)
+    update_input_value(driver, "appLoginResultEventDimensionValue1", loginStatus)
+    update_input_value(driver, "appLoginResultEventDimensionValue2", loginType)
+    update_input_value(driver, "appLoginResultEventDimensionValue3", errorName)
+    update_input_value(driver, "appLoginResultEventDimensionValue4", errorDescription)
+    time.sleep(1)
+    click_button(driver, config.BUTTON_ID_APP_LOGIN_RESULT)
 
 # App Analytics Custom Event: appSignupResult
-def appSignupResult():
-    return 0
+def appSignupResult(driver, signupStatus, signupType, errorName, errorDescription):
+    scroll_to_text(driver, config.TEXT_SIGNUP_RESULT)
+    time.sleep(1)
+    update_input_value(driver, "appSignupResultEventDimensionValue1", signupStatus)
+    update_input_value(driver, "appSignupResultEventDimensionValue2", signupType)
+    update_input_value(driver, "appSignupResultEventDimensionValue3", errorName)
+    update_input_value(driver, "appSignupResultEventDimensionValue4", errorDescription)
+    time.sleep(1)
+    click_button(driver, config.BUTTON_ID_APP_SIGNUP_RESULT)
 
 # App Analytics Custom Event: appTVPairResult
-def appTVPairResult():
-    return 0
+def appTVPairResult(driver, tvPairStatus, errorName, errorDescription):
+    scroll_to_text(driver, config.TEXT_TVPAIR_RESULT)
+    time.sleep(1)
+    update_input_value(driver, "appTVPairResultEventDimensionValue1", tvPairStatus)
+    update_input_value(driver, "appTVPairResultEventDimensionValue2", errorName)
+    update_input_value(driver, "appTVPairResultEventDimensionValue3", errorDescription)
+    time.sleep(1)
+    click_button(driver, config.BUTTON_ID_APP_TVPAIR_RESULT)

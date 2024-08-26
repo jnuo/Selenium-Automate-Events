@@ -21,7 +21,6 @@ from events import (
     appTVPairResult
 )
 
-
 def main():
     """Main function to run the automated tasks."""
     driver = setup_chrome_driver()
@@ -41,7 +40,7 @@ def main():
         
         # Input devyoubora as the Account Code
         update_input_value(driver, config.INPUT_ACCOUNT_CODE_ID, config.CUSTOM_ACCOUNT)
-        time.sleep(1)
+        # time.sleep(1)
 
         # Play the video for 3 seconds and then pause it
         play_and_pause_video(driver, config.VIDEO_ELEMENT_ID, 3)
@@ -91,6 +90,15 @@ def main():
                    'Incorrect Password',
                    'The password you have entered does not match with the email address. Please check your password and try again.'
         )
+        time.sleep(1)
+
+        appLoginResult(driver, 'Success', 'Google', '200', '')
+        time.sleep(1)
+
+        appSignupResult(driver, 'Success', 'Email', '200', '')
+        time.sleep(1)
+        
+        appTVPairResult(driver, 'Success', '200', '')
         time.sleep(1)
 
     except Exception as e:
