@@ -1,9 +1,12 @@
 # config.py
 
 # Paths and URLs
-CHROME_PROFILE_PATH = "/Users/ounrovali/Library/Application\ Support/Google/Chrome/Default"
+# CHROME_PROFILE_PATH = "/Users/ounrovali/Library/Application\ Support/Google/Chrome/Default" # work computer
+CHROME_PROFILE_PATH = "/Users/jnuo/Library/Application Support/Google/Chrome/Default" # home computer
+
 CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'
-LOCALHOST_URL = "http://localhost:5173/"
+# LOCALHOST_URL = "http://localhost:5173/" # work computer
+LOCALHOST_URL = "https://www.google.com/" # home computer
 
 # Element IDs and XPaths
 ACCOUNT_CODE_DROPDOWN_ID = "account-code-dropdown"
@@ -12,7 +15,6 @@ AUTO_SESSION_CHECKBOX_ID = "autoSessionCheckbox"
 INPUT_ACCOUNT_CODE_ID = "input-account-code"
 CUSTOM_ACCOUNT = "devyoubora"
 ANALYTICS_OPTIONS_TEXTAREA_ID = "textarea"
-
 
 # CUSTOM_ACCOUNT = "root"
 BUTTON_ID_SESSION_BEGIN = "btn_session_begin"
