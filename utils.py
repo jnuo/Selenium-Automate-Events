@@ -1,3 +1,4 @@
+import json
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -19,6 +20,21 @@ def setup_chrome_driver():
     service = Service(executable_path=config.CHROMEDRIVER_PATH)
     driver = webdriver.Chrome(service=service, options=chrome_options)
     return driver
+
+def changeTextArea(driver, textarea_id, json_data):
+    # Wait until the textarea is present in the DOM and is visible
+    textarea = WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.ID, textarea_id))
+    )
+    # Clear any existing text in the textarea
+    textarea.clear()
+
+    # Convert the JSON object to a string
+    json_string = json.dumps(json_data, indent=4)
+    
+    # Update the textarea with the new value
+    textarea.send_keys(json_string)
+    print(f"Textarea with ID '{textarea_id}' updated with JSON successfully.")
 
 def scroll_to_element(driver, element):
     """Scrolls to a specific element on the page."""
@@ -90,4 +106,4 @@ def click_button(driver, button_id):
         EC.presence_of_element_located((By.ID, button_id))
     )
     driver.execute_script("arguments[0].click();", button)
-    time.sleep(10)
+    time.sleep(3)

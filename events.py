@@ -3,7 +3,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import config
-from utils import scroll_to_text, update_input_value, click_button  # Import necessary functions from utils
+from utils import scroll_to_text, update_input_value, click_button, changeTextArea
+
+# Change the textarea value
+def update_analytics_options(driver, textarea_id, new_text):
+    changeTextArea(driver, textarea_id, new_text)
+
 
 # App Analytics Custom Events: Session Begin
 def session_begin(driver):

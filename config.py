@@ -11,6 +11,10 @@ CUSTOM_OPTION_XPATH = "//ul[contains(@class, 'dropdown-menu show')]//button[text
 AUTO_SESSION_CHECKBOX_ID = "autoSessionCheckbox"
 INPUT_ACCOUNT_CODE_ID = "input-account-code"
 CUSTOM_ACCOUNT = "devyoubora"
+ANALYTICS_OPTIONS_TEXTAREA_ID = "textarea"
+
+
+# CUSTOM_ACCOUNT = "root"
 BUTTON_ID_SESSION_BEGIN = "btn_session_begin"
 BUTTON_ID_API_RESULT = "btn_api_result"
 BUTTON_ID_APP_CRASH = "btn_app_crash"
