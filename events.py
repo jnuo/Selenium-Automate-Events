@@ -44,7 +44,7 @@ def appApiResult(driver, responseTime, pageCategory, page, apiMethod, responseSt
     """Scrolls to the 'Session Begin' section."""
     scroll_to_text(driver, config.TEXT_APP_API_RESULT)
     time.sleep(1)
-    update_input_value(driver, "apiEventValue1", responseTime)
+    update_input_value(driver, "apiEventValue1", str(responseTime))
     update_input_value(driver, "apiEventDimensionValue1", pageCategory)
     update_input_value(driver, "apiEventDimensionValue2", page)
     update_input_value(driver, "apiEventDimensionValue3", apiMethod)

@@ -63,35 +63,35 @@ def generate_login_result(driver):
     
     # Define failure scenarios
     failure_scenarios = [
-        ('Failure', 'Google', '403', 'Account disabled due to suspicious activity'),
-        ('Failure', 'Google', '500', 'Internal server error during Google authentication'),
-        ('Failure', 'Google', '404', 'Google account not found'),
-        ('Failure', 'Google', '401', 'Google OAuth consent screen not completed'),
-        ('Failure', 'Google', '503', 'Google service unavailable, try again later'),
-        ('Failure', 'Google', '429', 'Too many login attempts on Google, please wait'),
-        ('Failure', 'Google', '502', 'Bad gateway error during Google login'),
-        ('Failure', 'Google', '403', 'Google login denied, account under review'),
-        ('Failure', 'Google', '400', 'Malformed request to Google login API'),
-        ('Failure', 'Google', '408', 'Request timeout during Google login'),
-        ('Failure', 'Apple', '401', 'Invalid Apple ID credentials'),
-        ('Failure', 'Apple', '403', 'User denied permission to Apple login'),
-        ('Failure', 'Apple', '500', 'Apple authentication server error'),
-        ('Failure', 'Apple', '404', 'Apple ID not found'),
-        ('Failure', 'Apple', '409', 'Apple ID already in use in another session'),
-        ('Failure', 'Apple', '403', 'Apple login restricted, account flagged for security'),
-        ('Failure', 'Facebook', '403', 'User denied permission to Facebook login'),
-        ('Failure', 'Facebook', '500', 'Error retrieving user profile from Facebook'),
-        ('Failure', 'Facebook', '401', 'Invalid Facebook OAuth token'),
-        ('Failure', 'Facebook', '403', 'Facebook login denied, app not authorized'),
-        ('Failure', 'Facebook', '404', 'Facebook account not found'),
-        ('Failure', 'Facebook', '409', 'Conflict during Facebook login, try again'),
-        ('Failure', 'Email', '401', 'Invalid email or password'),
-        ('Failure', 'Email', '403', 'User account is locked due to too many failed attempts'),
-        ('Failure', 'Email', '500', 'Internal server error during email login'),
-        ('Failure', 'Email', '404', 'Email account not found'),
-        ('Failure', 'Email', '429', 'Too many requests, email login rate limited'),
-        ('Failure', 'Email', '403', 'Email login restricted, account flagged for review'),
-        ('Failure', 'Email', '408', 'Request timeout during email login'),
+        ('Fail', 'Google', '403', 'Account disabled due to suspicious activity'),
+        ('Fail', 'Google', '500', 'Internal server error during Google authentication'),
+        ('Fail', 'Google', '404', 'Google account not found'),
+        ('Fail', 'Google', '401', 'Google OAuth consent screen not completed'),
+        ('Fail', 'Google', '503', 'Google service unavailable, try again later'),
+        ('Fail', 'Google', '429', 'Too many login attempts on Google, please wait'),
+        ('Fail', 'Google', '502', 'Bad gateway error during Google login'),
+        ('Fail', 'Google', '403', 'Google login denied, account under review'),
+        ('Fail', 'Google', '400', 'Malformed request to Google login API'),
+        ('Fail', 'Google', '408', 'Request timeout during Google login'),
+        ('Fail', 'Apple', '401', 'Invalid Apple ID credentials'),
+        ('Fail', 'Apple', '403', 'User denied permission to Apple login'),
+        ('Fail', 'Apple', '500', 'Apple authentication server error'),
+        ('Fail', 'Apple', '404', 'Apple ID not found'),
+        ('Fail', 'Apple', '409', 'Apple ID already in use in another session'),
+        ('Fail', 'Apple', '403', 'Apple login restricted, account flagged for security'),
+        ('Fail', 'Facebook', '403', 'User denied permission to Facebook login'),
+        ('Fail', 'Facebook', '500', 'Error retrieving user profile from Facebook'),
+        ('Fail', 'Facebook', '401', 'Invalid Facebook OAuth token'),
+        ('Fail', 'Facebook', '403', 'Facebook login denied, app not authorized'),
+        ('Fail', 'Facebook', '404', 'Facebook account not found'),
+        ('Fail', 'Facebook', '409', 'Conflict during Facebook login, try again'),
+        ('Fail', 'Email', '401', 'Invalid email or password'),
+        ('Fail', 'Email', '403', 'User account is locked due to too many failed attempts'),
+        ('Fail', 'Email', '500', 'Internal server error during email login'),
+        ('Fail', 'Email', '404', 'Email account not found'),
+        ('Fail', 'Email', '429', 'Too many requests, email login rate limited'),
+        ('Fail', 'Email', '403', 'Email login restricted, account flagged for review'),
+        ('Fail', 'Email', '408', 'Request timeout during email login'),
     ]
     
     # Weighted selection to ensure at least 85% success rate
@@ -105,7 +105,7 @@ def generate_login_result(driver):
     appLoginResult(driver, *result)
 
     # If failure, decide whether to retry
-    if result[0] == 'Failure':
+    if result[0] == 'Fail':
         retry_chance = random.random()
         if retry_chance <= 0.5:  # 50% chance to retry
             wait_time = random.randint(2, 10)  # Wait between 2 and 10 seconds before retrying
@@ -137,28 +137,28 @@ def generate_signup_result(driver):
     
     # Define failure scenarios
     failure_scenarios = [
-        ('Failure', 'Google', '400', 'Invalid Google account information provided'),
-        ('Failure', 'Google', '409', 'Google account already registered'),
-        ('Failure', 'Google', '422', 'Google account does not meet age requirements'),
-        ('Failure', 'Google', '500', 'Google server error during signup'),
-        ('Failure', 'Google', '403', 'Google account creation denied'),
-        ('Failure', 'Apple', '400', 'Invalid Apple ID details'),
-        ('Failure', 'Apple', '409', 'Apple ID already in use'),
-        ('Failure', 'Apple', '422', 'Apple ID does not meet age requirements'),
-        ('Failure', 'Apple', '500', 'Apple server error during signup'),
-        ('Failure', 'Apple', '403', 'Apple account creation restricted'),
-        ('Failure', 'Facebook', '400', 'Invalid Facebook account details'),
-        ('Failure', 'Facebook', '409', 'Facebook account already exists'),
-        ('Failure', 'Facebook', '422', 'Facebook account does not meet age requirements'),
-        ('Failure', 'Facebook', '500', 'Facebook server error during signup'),
-        ('Failure', 'Facebook', '403', 'Facebook account creation denied'),
-        ('Failure', 'Email', '400', 'Invalid email address or details'),
-        ('Failure', 'Email', '409', 'Email already registered'),
-        ('Failure', 'Email', '422', 'Email does not meet age requirements'),
-        ('Failure', 'Email', '500', 'Server error during email signup'),
-        ('Failure', 'Email', '403', 'Email account creation restricted'),
-        ('Failure', 'Email', '400', 'Password does not meet complexity requirements'),
-        ('Failure', 'Email', '422', 'Email domain not supported'),
+        ('Fail', 'Google', '400', 'Invalid Google account information provided'),
+        ('Fail', 'Google', '409', 'Google account already registered'),
+        ('Fail', 'Google', '422', 'Google account does not meet age requirements'),
+        ('Fail', 'Google', '500', 'Google server error during signup'),
+        ('Fail', 'Google', '403', 'Google account creation denied'),
+        ('Fail', 'Apple', '400', 'Invalid Apple ID details'),
+        ('Fail', 'Apple', '409', 'Apple ID already in use'),
+        ('Fail', 'Apple', '422', 'Apple ID does not meet age requirements'),
+        ('Fail', 'Apple', '500', 'Apple server error during signup'),
+        ('Fail', 'Apple', '403', 'Apple account creation restricted'),
+        ('Fail', 'Facebook', '400', 'Invalid Facebook account details'),
+        ('Fail', 'Facebook', '409', 'Facebook account already exists'),
+        ('Fail', 'Facebook', '422', 'Facebook account does not meet age requirements'),
+        ('Fail', 'Facebook', '500', 'Facebook server error during signup'),
+        ('Fail', 'Facebook', '403', 'Facebook account creation denied'),
+        ('Fail', 'Email', '400', 'Invalid email address or details'),
+        ('Fail', 'Email', '409', 'Email already registered'),
+        ('Fail', 'Email', '422', 'Email does not meet age requirements'),
+        ('Fail', 'Email', '500', 'Server error during email signup'),
+        ('Fail', 'Email', '403', 'Email account creation restricted'),
+        ('Fail', 'Email', '400', 'Password does not meet complexity requirements'),
+        ('Fail', 'Email', '422', 'Email domain not supported'),
     ]
     
     # Weighted selection to ensure up to 75% success rate and 25% failure rate
@@ -172,7 +172,7 @@ def generate_signup_result(driver):
     appSignupResult(driver, *result)
 
     # If failure, decide whether to retry
-    if result[0] == 'Failure':
+    if result[0] == 'Fail':
         retry_chance = random.random()
         if retry_chance <= 0.5:  # 50% chance to retry
             wait_time = random.randint(2, 10)  # Wait between 2 and 10 seconds before retrying
@@ -189,6 +189,104 @@ def generate_signup_result(driver):
                 print(f"\tRetrying signup result is {str(failed_result)}.")
                 appSignupResult(driver, *failed_result)
 
+def generate_api_result(driver):
+    """Randomly generate an API result for various video streaming actions, ensuring up to 25% error rate."""
+    
+    # Define success scenarios for different API methods with realistic app_page and appApiMethod values
+    success_scenarios = {
+        'browseGenre': [
+            ('/genre/action', 'Success', 'loginGenre', '200', ''),
+            ('/genre/comedy', 'Success', 'loginGenre', '200', ''),
+        ],
+        'browseRecommendations': [
+            ('/recommendations/home', 'Success', 'fetchRecommendations', '200', ''),
+            ('/recommendations/trending', 'Success', 'fetchRecommendations', '200', ''),
+        ],
+        'pagination': [
+            ('/search/results', 'Success', 'pagination', '200', ''),
+            ('/genre/action/page2', 'Success', 'pagination', '200', ''),
+        ],
+        'addToFavorites': [
+            ('/favorites', 'Success', 'addFavorite', '200', ''),
+            ('/favorites', 'Success', 'addFavorite', '200', ''),
+        ],
+        'removeFromFavorites': [
+            ('/favorites', 'Success', 'removeFavorite', '200', ''),
+            ('/favorites', 'Success', 'removeFavorite', '200', ''),
+        ],
+        'downloadToMobile': [
+            ('/downloads', 'Success', 'downloadToMobile', '200', ''),
+            ('/downloads', 'Success', 'downloadToMobile', '200', ''),
+        ],
+        'changeProfile': [
+            ('/profile/change', 'Success', 'changeUserProfile', '200', ''),
+            ('/profile/change', 'Success', 'changeUserProfile', '200', ''),
+        ],
+        'updateSettings': [
+            ('/settings/video', 'Success', 'updateVideoSettings', '200', ''),
+            ('/settings/audio', 'Success', 'updateAudioSettings', '200', ''),
+        ]
+    }
+    
+    # Define failure scenarios for different API methods with realistic app_page and appApiMethod values
+    failure_scenarios = {
+        'browseGenre': [
+            ('/genre/action', 'Fail', 'loginGenre', '404', 'Genre not found'),
+            ('/genre/comedy', 'Fail', 'loginGenre', '500', 'Server error while browsing genre'),
+        ],
+        'browseRecommendations': [
+            ('/recommendations/home', 'Fail', 'fetchRecommendations', '500', 'Server error while fetching recommendations'),
+            ('/recommendations/trending', 'Fail', 'fetchRecommendations', '503', 'Service unavailable for recommendations'),
+        ],
+        'pagination': [
+            ('/search/results', 'Fail', 'pagination', '400', 'Bad request for pagination'),
+            ('/genre/action/page2', 'Fail', 'pagination', '500', 'Server error during pagination'),
+        ],
+        'addToFavorites': [
+            ('/favorites', 'Fail', 'addFavorite', '400', 'Bad request while adding to favorites'),
+            ('/favorites', 'Fail', 'addFavorite', '500', 'Server error while adding to favorites'),
+        ],
+        'removeFromFavorites': [
+            ('/favorites', 'Fail', 'removeFavorite', '400', 'Bad request while removing from favorites'),
+            ('/favorites', 'Fail', 'removeFavorite', '500', 'Server error while removing from favorites'),
+        ],
+        'downloadToMobile': [
+            ('/downloads', 'Fail', 'downloadToMobile', '403', 'Forbidden to start download'),
+            ('/downloads', 'Fail', 'downloadToMobile', '500', 'Server error during download initiation'),
+        ],
+        'changeProfile': [
+            ('/profile/change', 'Fail', 'changeUserProfile', '400', 'Bad request while changing profile'),
+            ('/profile/change', 'Fail', 'changeUserProfile', '500', 'Server error while changing profile'),
+        ],
+        'updateSettings': [
+            ('/settings/video', 'Fail', 'updateVideoSettings', '400', 'Bad request while updating video settings'),
+            ('/settings/audio', 'Fail', 'updateAudioSettings', '500', 'Server error while updating audio settings'),
+        ]
+    }
+    
+    # Randomly select an API method
+    api_method = random.choice(list(success_scenarios.keys()))
+
+    # Randomly decide success or failure with a 75% success rate
+    if random.random() <= 0.75:  # 75% chance to select a success scenario
+        result = random.choice(success_scenarios[api_method])
+    else:  # 25% chance to select a failure scenario
+        result = random.choice(failure_scenarios[api_method])
+    
+    response_time = random.randint(10, 100)  # Generate a random response time
+    
+    # Map the correct parameters
+    app_page = result[0]  # This is the URL path or screen name
+    response_status = result[1]  # Either "Success" or "Fail"
+    api_method_value = result[2]  # Contextual action instead of HTTP method
+    status_code = result[3]  # Status code, typically 200, 404, etc.
+    error_description = result[4]  # Error description or empty string if successful
+    
+    print(f'\tAPI Method: {api_method}, App Page: {app_page}, API Action: {api_method_value}, Status: {response_status}, Status Code: {status_code}, Error Description: {error_description}, Response Time: {response_time}ms')
+    
+    # Call the appApiResult function with the correct mapping
+    appApiResult(driver, response_time, api_method, app_page, api_method_value, response_status, status_code, error_description)
+
 def run_scenario(driver):
     """Run a scenario based on random selection."""
     scenario_type = random.choice(['login_only', 'login_only', 'login_only', 'login_only', 'signup_only', 'signup_then_login'])
@@ -196,22 +294,35 @@ def run_scenario(driver):
     if scenario_type == 'login_only':
         print("\tScenario: Login Only")
         generate_login_result(driver)
+        # Generate a few API call results after login
+        for _ in range(random.randint(2, 8)):  # Send 1 to 3 API calls
+            generate_api_result(driver)
 
     elif scenario_type == 'signup_only':
         print("\tScenario: Signup Only")
         generate_signup_result(driver)
+        # Generate a few API call results after signup
+        for _ in range(random.randint(2, 8)):  # Send 1 to 3 API calls
+            generate_api_result(driver)
 
     elif scenario_type == 'signup_then_login':
         print("\tScenario: Signup then Login")
         generate_signup_result(driver)
         time.sleep(2)
         generate_login_result(driver)
+        # Generate a few API call results after signup and login
+        for _ in range(random.randint(2, 8)):  # Send 1 to 3 API calls
+            generate_api_result(driver)
 
     elif scenario_type == 'login_then_signup':
         print("\tScenario: Login then Signup")
         generate_login_result(driver)
         time.sleep(2)
         generate_signup_result(driver)
+        # Generate a few API call results after login and signup
+        for _ in range(random.randint(2, 8)):  # Send 1 to 3 API calls
+            generate_api_result(driver)
+
 
 def run_automation_task():
     """Run the automation task once."""
@@ -256,18 +367,7 @@ def run_automation_task():
         # Close the driver
         driver.quit()
 
-
-# Play the video for 3 seconds and then pause it
-        # play_and_pause_video(driver, VIDEO_ELEMENT_ID, 3)
-        # time.sleep(1)
-
-        # Session Begin Event
-        # session_begin(driver)
-        # time.sleep(1)
-
  # Trigger other events
-        # appApiResult(driver, 32, 'signup', '/app/signup.aspx', '/signupEmail', 'Success', '200', '')
-        # time.sleep(1)
 
         # appCrash(driver, 'signup', '/app/signup.aspx', 'java.lang.NullPointerException', 'Object not set to an instance of an object', '''
         #             Exception in thread "main" java.lang.NullPointerException
@@ -302,11 +402,5 @@ def run_automation_task():
         # )
         # time.sleep(1)
 
-        # appLoginResult(driver, 'Success', 'Google', '200', '')
-        # time.sleep(1)
-
-        # appSignupResult(driver, 'Success', 'Email', '200', '')
-        # time.sleep(1)
-        
         # appTVPairResult(driver, 'Success', '200', '')
         # time.sleep(1)
