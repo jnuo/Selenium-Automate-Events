@@ -1,12 +1,12 @@
 # config.py
 
 # Paths and URLs
-# CHROME_PROFILE_PATH = "/Users/ounrovali/Library/Application\ Support/Google/Chrome/Default" # work computer
-CHROME_PROFILE_PATH = "/Users/jnuo/Library/Application Support/Google/Chrome/Default" # home computer
+CHROME_PROFILE_PATH = "/Users/ounrovali/Library/Application\ Support/Google/Chrome/Default" # work computer
+# CHROME_PROFILE_PATH = "/Users/jnuo/Library/Application Support/Google/Chrome/Default" # home computer
 
 CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'
-# LOCALHOST_URL = "http://localhost:5173/" # work computer
-LOCALHOST_URL = "https://www.google.com/" # home computer
+LOCALHOST_URL = "http://localhost:5173/" # work computer
+# LOCALHOST_URL = "https://www.google.com/" # home computer
 
 # Element IDs and XPaths
 ACCOUNT_CODE_DROPDOWN_ID = "account-code-dropdown"

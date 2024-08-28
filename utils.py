@@ -13,9 +13,6 @@ def setup_chrome_driver():
     chrome_options = Options()
     chrome_options.add_argument(f"user-data-dir={config.CHROME_PROFILE_PATH}")
 
-    # options = webdriver.ChromeOptions()
-    # options.add_argument(f"user-data-dir={config.CHROME_PROFILE_PATH}/Default")
-    
     # Set up the webdriver
     service = Service(executable_path=config.CHROMEDRIVER_PATH)
     driver = webdriver.Chrome(service=service, options=chrome_options)
@@ -34,7 +31,7 @@ def changeTextArea(driver, textarea_id, json_data):
     
     # Update the textarea with the new value
     textarea.send_keys(json_string)
-    print(f"Textarea with ID '{textarea_id}' updated with JSON successfully.")
+    # print(f"Textarea with ID '{textarea_id}' updated with JSON successfully.")
 
 def scroll_to_element(driver, element):
     """Scrolls to a specific element on the page."""
@@ -82,9 +79,9 @@ def toggle_auto_session(driver, should_enable=True):
 
     if is_checked != should_enable:
         checkbox.click()
-        print(f"Auto session toggled to {'enabled' if should_enable else 'disabled'}.")
+        print(f"\tAuto session toggled to {'enabled' if should_enable else 'disabled'}.")
     else:
-        print(f"Auto session already {'enabled' if should_enable else 'disabled'}.")
+        print(f"\tAuto session already {'enabled' if should_enable else 'disabled'}.")
 
 
 def play_and_pause_video(driver, video_id, play_time):

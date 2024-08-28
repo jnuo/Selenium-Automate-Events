@@ -1,13 +1,6 @@
 import time
 import random
-import config
-from utils import (
-    setup_chrome_driver,
-    select_custom_account_code,
-    update_input_value,
-    toggle_auto_session,
-    play_and_pause_video,
-)
+from utils import setup_chrome_driver
 from events import (
     update_analytics_options,
     session_begin,
@@ -17,8 +10,15 @@ from events import (
     appUIError,
     appLoginResult,
     appSignupResult,
-    appTVPairResult
+    appTVPairResult,
 )
+from utils import(
+    toggle_auto_session,
+    select_custom_account_code,
+    update_input_value,
+    play_and_pause_video
+)
+from config import LOCALHOST_URL, ANALYTICS_OPTIONS_TEXTAREA_ID, INPUT_ACCOUNT_CODE_ID, CUSTOM_ACCOUNT, VIDEO_ELEMENT_ID
 
 def select_random_user_name():
     """Generate a pool of user names and select one randomly."""
@@ -42,10 +42,10 @@ def update_analytics_options_with_random_user(driver, textarea_id):
             "qa-custom-3": "cenas"
         }
     }
-    print(f'user.name is {selected_user_name}')
     
     # Update analytics options with the generated JSON data
     update_analytics_options(driver, textarea_id, json_data)
+    print(f'Starting new session with User ID: {selected_user_name}...')
 
 def generate_login_result(driver):
     """Randomly generate a login result ensuring at least 85% success rate."""
@@ -190,7 +190,7 @@ def generate_signup_result(driver):
 
 def run_scenario(driver):
     """Run a scenario based on random selection."""
-    scenario_type = random.choice(['login_only', 'signup_only', 'signup_then_login', 'login_then_signup'])
+    scenario_type = random.choice(['login_only', 'login_only', 'login_only', 'login_only', 'signup_only', 'signup_then_login'])
 
     if scenario_type == 'login_only':
         print("\tScenario: Login Only")
@@ -218,11 +218,11 @@ def run_automation_task():
 
     try:
         # Open the Vue.js application running on localhost
-        driver.get(config.LOCALHOST_URL)
+        driver.get(LOCALHOST_URL)
         time.sleep(1)
 
         # Update analytics options with a random user name
-        update_analytics_options_with_random_user(driver, config.ANALYTICS_OPTIONS_TEXTAREA_ID)
+        update_analytics_options_with_random_user(driver, ANALYTICS_OPTIONS_TEXTAREA_ID)
         time.sleep(1)
 
         # Ensure the auto session start toggle is turned on
@@ -234,15 +234,66 @@ def run_automation_task():
         time.sleep(1)
         
         # Input devyoubora as the Account Code
-        update_input_value(driver, config.INPUT_ACCOUNT_CODE_ID, config.CUSTOM_ACCOUNT)
+        update_input_value(driver, INPUT_ACCOUNT_CODE_ID, CUSTOM_ACCOUNT)
         time.sleep(1)
+        # todo onur: burda devyoubora text'inde kalıyor focus, bunun focusunu kaybetsek, belki saçma sapan yüz kez session start göndermez.
 
         # Play the video for 3 seconds and then pause it
-        play_and_pause_video(driver, config.VIDEO_ELEMENT_ID, 3)
+        play_and_pause_video(driver, VIDEO_ELEMENT_ID, 3)
         time.sleep(1)
 
-        # Run a scenario (login, signup, or both)
+        # Session Begin Event
+        # session_begin(driver)
+        # time.sleep(1)
+
         run_scenario(driver)
+        time.sleep(1)
+
+        # Trigger other events
+        # appApiResult(driver, 32, 'signup', '/app/signup.aspx', '/signupEmail', 'Success', '200', '')
+        # time.sleep(1)
+
+        # appCrash(driver, 'signup', '/app/signup.aspx', 'java.lang.NullPointerException', 'Object not set to an instance of an object', '''
+        #             Exception in thread "main" java.lang.NullPointerException
+        #                 at com.example.myproject.Book.getTitle(Book.java:16)        
+        #                 at com.example.myproject.Author.getBookTitles(Author.java:25)        
+        #                 at com.example.myproject.Bootstrap.main(Bootstrap.java:14)
+        #             '''
+        # )
+        # time.sleep(1)
+
+        # appError(driver,
+        #             'signup',
+        #             '/app/signup.aspx',
+        #             'java.lang.NullPointerException',
+        #             'Object not set to an instance of an object',
+        #             '''
+        #             Exception in thread "main" java.lang.NullPointerException
+        #                 at com.example.myproject.Book.getTitle(Book.java:16)       
+        #                 at com.example.myproject.Author.getBookTitles(Author.java:25)
+        #                 at com.example.myproject.Bootstrap.main(Bootstrap.java:14)
+        #             '''
+        # )
+        # time.sleep(1)
+
+        # appUIError(driver,
+        #            'signup',
+        #            '/app/login.aspx',
+        #            'password-incorrect',
+        #            'the password not match the username',
+        #            'Incorrect Password',
+        #            'The password you have entered does not match with the email address. Please check your password and try again.'
+        # )
+        # time.sleep(1)
+
+        # appLoginResult(driver, 'Success', 'Google', '200', '')
+        # time.sleep(1)
+
+        # appSignupResult(driver, 'Success', 'Email', '200', '')
+        # time.sleep(1)
+        
+        # appTVPairResult(driver, 'Success', '200', '')
+        # time.sleep(1)
 
     except Exception as e:
         # Print the error to the console
@@ -251,15 +302,3 @@ def run_automation_task():
     finally:
         # Close the driver
         driver.quit()
-
-def main():
-    """Main function to run the automated tasks repeatedly."""
-    number_of_runs = 10  # Set the number of times you want to run the script
-
-    for _ in range(number_of_runs):
-        run_automation_task()
-        print("\tCompleted one run of the automation task.")
-        time.sleep(2)  # Optional: Add a delay between runs if needed
-
-if __name__ == "__main__":
-    main()
