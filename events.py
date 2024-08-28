@@ -3,12 +3,34 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import config
-from utils import scroll_to_text, update_input_value, click_button, changeTextArea
+from utils import scroll_to_text, update_input_value, click_button, changeTextArea, scroll_to_element
 
 # Change the textarea value
 def update_analytics_options(driver, textarea_id, new_text):
     changeTextArea(driver, textarea_id, new_text)
 
+def click_fire_navigation(driver):
+    """Clicks the 'Fire Navigation' button by its ID after scrolling into view."""
+    fire_navigation_button = WebDriverWait(driver, 20).until(
+        EC.element_to_be_clickable((By.ID, config.BUTTON_FIRE_NAVIGATION))
+    )
+    # Scroll to the button before clicking it
+    scroll_to_element(driver, fire_navigation_button)
+    time.sleep(1)
+    fire_navigation_button.click()
+    print("\tClicked the 'Fire Navigation' button.")
+
+def click_end_session(driver):
+    """Clicks the 'End Session' button by its ID after scrolling into view."""
+    scroll_to_text(driver, "App Analytics Session Events")
+    time.sleep(1)
+    end_session_button = WebDriverWait(driver, 20).until(
+        EC.element_to_be_clickable((By.ID, config.BUTTON_END_SESSION))
+    )
+    # Scroll to the button before clicking it
+    # scroll_to_element(driver, end_session_button)
+    end_session_button.click()
+    print("\tClicked the 'End Session' button.")
 
 # App Analytics Custom Events: Session Begin
 def session_begin(driver):

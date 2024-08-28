@@ -11,12 +11,13 @@ from events import (
     appLoginResult,
     appSignupResult,
     appTVPairResult,
+    click_fire_navigation,
+    click_end_session
 )
 from utils import(
     toggle_auto_session,
     select_custom_account_code,
-    update_input_value,
-    play_and_pause_video
+    update_input_value
 )
 from config import LOCALHOST_URL, ANALYTICS_OPTIONS_TEXTAREA_ID, INPUT_ACCOUNT_CODE_ID, CUSTOM_ACCOUNT, VIDEO_ELEMENT_ID
 
@@ -236,20 +237,35 @@ def run_automation_task():
         # Input devyoubora as the Account Code
         update_input_value(driver, INPUT_ACCOUNT_CODE_ID, CUSTOM_ACCOUNT)
         time.sleep(1)
-        # todo onur: burda devyoubora text'inde kalıyor focus, bunun focusunu kaybetsek, belki saçma sapan yüz kez session start göndermez.
-
-        # Play the video for 3 seconds and then pause it
-        play_and_pause_video(driver, VIDEO_ELEMENT_ID, 3)
+        
+        # Click Fire Navigation button to start a session
+        click_fire_navigation(driver)
         time.sleep(1)
+        
+        run_scenario(driver)
+        time.sleep(1)
+
+    except Exception as e:
+        # Print the error to the console
+        print(f"An error occurred: {e}")
+
+    finally:
+        # Click End Session button to end the session
+        click_end_session(driver)
+        
+        # Close the driver
+        driver.quit()
+
+
+# Play the video for 3 seconds and then pause it
+        # play_and_pause_video(driver, VIDEO_ELEMENT_ID, 3)
+        # time.sleep(1)
 
         # Session Begin Event
         # session_begin(driver)
         # time.sleep(1)
 
-        run_scenario(driver)
-        time.sleep(1)
-
-        # Trigger other events
+ # Trigger other events
         # appApiResult(driver, 32, 'signup', '/app/signup.aspx', '/signupEmail', 'Success', '200', '')
         # time.sleep(1)
 
@@ -294,11 +310,3 @@ def run_automation_task():
         
         # appTVPairResult(driver, 'Success', '200', '')
         # time.sleep(1)
-
-    except Exception as e:
-        # Print the error to the console
-        print(f"An error occurred: {e}")
-
-    finally:
-        # Close the driver
-        driver.quit()

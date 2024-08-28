@@ -26,6 +26,8 @@ BUTTON_ID_APP_LOGIN_RESULT = "btn_app_login_result"
 BUTTON_ID_APP_SIGNUP_RESULT = "btn_app_signup_result"
 BUTTON_ID_APP_TVPAIR_RESULT = "btn_app_tvpair_result"
 VIDEO_ELEMENT_ID = "videohlsjs"
+BUTTON_FIRE_NAVIGATION = "btn-fire-nav"
+BUTTON_END_SESSION = "btn-end-session"
 
 # Text to scroll to
 TEXT_SESSION_BEGIN = "App Analytics Custom Events: Session Begin"
