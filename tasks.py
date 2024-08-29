@@ -3,7 +3,6 @@ import random
 from utils import setup_chrome_driver
 from events import (
     update_analytics_options,
-    session_begin,
     appApiResult,
     appCrash,
     appError,
@@ -329,41 +328,281 @@ def generate_api_result(driver):
     # Call the appApiResult function with the correct mapping
     appApiResult(driver, response_time, api_method, app_page, api_method_value, response_status, status_code, error_description)
 
-def run_scenario(driver):
-    """Run a scenario based on random selection."""
-    scenario_type = random.choice(['login_only', 'login_only', 'login_only', 'login_only', 'signup_only', 'signup_then_login'])
+def generate_app_crash(driver):
+    """Randomly generate an app crash event with realistic error details."""
+    
+    crash_scenarios = [
+        # (pageCategory, page, errorName, errorDescription, errorMetadata)
+        ('loginGenre', '/genre/action', 'NullPointerException', 'Attempt to invoke a method on a null object reference', 
+         'Exception in thread "main" java.lang.NullPointerException\n    at com.example.myproject.Book.getTitle(Book.java:16)\n    at com.example.myproject.Author.getBookTitles(Author.java:25)\n    at com.example.myproject.Bootstrap.main(Bootstrap.java:14)'),
+        
+        ('loginGenre', '/genre/action', 'IndexOutOfBoundsException', 'Index 5 out of bounds for length 3', 
+         'java.lang.IndexOutOfBoundsException: Index 5 out of bounds for length 3\n    at java.base/java.util.ArrayList.rangeCheck(ArrayList.java:659)\n    at java.base/java.util.ArrayList.get(ArrayList.java:435)\n    at com.example.myproject.Library.getBook(Library.java:47)\n    at com.example.myproject.Reader.readBook(Reader.java:22)'),
+        
+        ('fetchRecommendations', '/recommendations/home', 'IllegalArgumentException', 'Invalid argument passed to method', 
+         'java.lang.IllegalArgumentException: Invalid argument passed to method\n    at com.example.myproject.Calculator.addNumbers(Calculator.java:11)\n    at com.example.myproject.Main.main(Main.java:6)'),
+        
+        ('pagination', '/search/results', 'ArrayIndexOutOfBoundsException', 'Array index is out of range', 
+         'java.lang.ArrayIndexOutOfBoundsException: Index 10 out of bounds for length 5\n    at com.example.myproject.ArrayProcessor.processArray(ArrayProcessor.java:29)\n    at com.example.myproject.Main.main(Main.java:14)'),
+        
+        ('addFavorite', '/favorites', 'FileNotFoundException', 'File not found in the specified directory', 
+         'java.io.FileNotFoundException: /user/home/document.txt (No such file or directory)\n    at java.base/java.io.FileInputStream.open0(Native Method)\n    at java.base/java.io.FileInputStream.open(FileInputStream.java:213)\n    at com.example.myproject.FileReader.readFile(FileReader.java:19)'),
+        
+        ('removeFavorite', '/favorites', 'SocketTimeoutException', 'Connection timed out after 30000 milliseconds', 
+         'java.net.SocketTimeoutException: connect timed out\n    at java.base/java.net.PlainSocketImpl.waitForConnect(Native Method)\n    at java.base/java.net.PlainSocketImpl.socketConnect(PlainSocketImpl.java:107)\n    at java.base/java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)\n    at com.example.myproject.NetworkManager.connect(NetworkManager.java:42)'),
+        
+        ('downloadToMobile', '/downloads', 'ClassNotFoundException', 'Specified class not found in classpath', 
+         'java.lang.ClassNotFoundException: com.example.myproject.MissingClass\n    at java.base/java.net.URLClassLoader.findClass(URLClassLoader.java:471)\n    at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:589)\n    at com.example.myproject.Main.main(Main.java:18)'),
+        
+        ('changeUserProfile', '/profile/change', 'OutOfMemoryError', 'Java heap space exceeded', 
+         'java.lang.OutOfMemoryError: Java heap space\n    at java.base/java.util.Arrays.copyOf(Arrays.java:3721)\n    at com.example.myproject.LargeObject.allocate(LargeObject.java:56)\n    at com.example.myproject.Main.main(Main.java:20)'),
+        
+        ('updateVideoSettings', '/settings/video', 'IllegalStateException', 'Method has been invoked at an illegal or inappropriate time', 
+         'java.lang.IllegalStateException: Cannot call method after it has been closed\n    at com.example.myproject.Resource.close(Resource.java:33)\n    at com.example.myproject.Manager.manage(Manager.java:14)\n    at com.example.myproject.Main.main(Main.java:17)'),
+        
+        ('updateAudioSettings', '/settings/audio', 'NumberFormatException', 'Invalid number format during parsing', 
+         'java.lang.NumberFormatException: For input string: "abc123"\n    at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)\n    at com.example.myproject.Parser.parseNumber(Parser.java:11)\n    at com.example.myproject.Main.main(Main.java:9)'),
+        
+        ('fetchRecommendations', '/recommendations/trending', 'SecurityException', 'Access denied due to security policy', 
+         'java.lang.SecurityException: Permission denied\n    at java.base/java.lang.SecurityManager.checkPermission(SecurityManager.java:608)\n    at com.example.myproject.AccessControl.checkAccess(AccessControl.java:22)\n    at com.example.myproject.Main.main(Main.java:15)'),
+        
+        ('loginGenre', '/genre/comedy', 'SQLSyntaxErrorException', 'Syntax error in SQL query', 
+         'java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax\n    at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:118)\n    at com.example.myproject.Database.executeQuery(Database.java:29)\n    at com.example.myproject.Main.main(Main.java:18)'),
+        
+        ('pagination', '/genre/action/page2', 'ClassCastException', 'Cannot cast object of type \'String\' to \'Integer\'', 
+         'java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Integer\n    at com.example.myproject.Converter.convert(Converter.java:14)\n    at com.example.myproject.Main.main(Main.java:11)'),
+        
+        ('addFavorite', '/favorites', 'IOException', 'I/O operation failed or was interrupted', 
+         'java.io.IOException: Stream closed\n    at java.base/java.io.BufferedInputStream.getBufIfOpen(BufferedInputStream.java:168)\n    at com.example.myproject.StreamProcessor.process(StreamProcessor.java:33)\n    at com.example.myproject.Main.main(Main.java:20)'),
+        
+        ('removeFavorite', '/favorites', 'UnsupportedOperationException', 'Operation is not supported', 
+         'java.lang.UnsupportedOperationException: Operation is not supported\n    at com.example.myproject.Feature.execute(Feature.java:21)\n    at com.example.myproject.Main.main(Main.java:16)'),
+        
+        ('downloadToMobile', '/downloads', 'ConcurrentModificationException', 'Concurrent modification detected during iteration', 
+         'java.util.ConcurrentModificationException\n    at java.base/java.util.ArrayList$Itr.checkForComodification(ArrayList.java:1013)\n    at java.base/java.util.ArrayList$Itr.next(ArrayList.java:967)\n    at com.example.myproject.IteratorExample.iterate(IteratorExample.java:28)\n    at com.example.myproject.Main.main(Main.java:22)'),
+        
+        ('changeUserProfile', '/profile/change', 'StackOverflowError', 'Stack overflow due to recursive method calls', 
+         'java.lang.StackOverflowError\n    at com.example.myproject.RecursionExample.recursiveMethod(RecursionExample.java:10)\n    at com.example.myproject.RecursionExample.recursiveMethod(RecursionExample.java:11)\n    at com.example.myproject.Main.main(Main.java:13)'),
+        
+        ('updateVideoSettings', '/settings/video', 'FileAlreadyExistsException', 'File already exists and cannot be overwritten', 
+         'java.nio.file.FileAlreadyExistsException: /user/home/document.txt\n    at java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:94)\n    at com.example.myproject.FileManager.createFile(FileManager.java:22)\n    at com.example.myproject.Main.main(Main.java:10)'),
+        
+        ('updateAudioSettings', '/settings/audio', 'ArithmeticException', 'Division by zero', 
+         'java.lang.ArithmeticException: / by zero\n    at com.example.myproject.Calculator.divide(Calculator.java:13)\n    at com.example.myproject.Main.main(Main.java:15)'),
+        
+        ('loginGenre', '/genre/action', 'TimeoutException', 'Operation timed out after waiting for 60 seconds', 
+         'java.util.concurrent.TimeoutException: Operation timed out\n    at com.example.myproject.Operation.execute(Operation.java:34)\n    at com.example.myproject.Main.main(Main.java:11)'),
+        
+        ('fetchRecommendations', '/recommendations/home', 'FileSystemException', 'File system error during file operation', 
+         'java.nio.file.FileSystemException: /user/home/document.txt: No space left on device\n    at java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:92)\n    at com.example.myproject.FileManager.saveFile(FileManager.java:18)\n    at com.example.myproject.Main.main(Main.java:9)'),
+        
+        ('pagination', '/search/results', 'BufferOverflowException', 'Attempt to write beyond buffer\'s limit', 
+         'java.nio.BufferOverflowException\n    at java.base/java.nio.Buffer.checkOverflow(Buffer.java:145)\n    at com.example.myproject.BufferHandler.write(BufferHandler.java:32)\n    at com.example.myproject.Main.main(Main.java:14)'),
+        
+        ('addFavorite', '/favorites', 'MalformedURLException', 'Invalid URL format', 
+         'java.net.MalformedURLException: no protocol: example.com\n    at java.base/java.net.URL.<init>(URL.java:620)\n    at com.example.myproject.UrlProcessor.processUrl(UrlProcessor.java:11)\n    at com.example.myproject.Main.main(Main.java:9)'),
+        
+        ('removeFavorite', '/favorites', 'InterruptedException', 'Thread interrupted while waiting', 
+         'java.lang.InterruptedException: sleep interrupted\n    at java.base/java.lang.Thread.sleep(Native Method)\n    at com.example.myproject.ThreadManager.waitForCompletion(ThreadManager.java:25)\n    at com.example.myproject.Main.main(Main.java:12)'),
+        
+        ('downloadToMobile', '/downloads', 'BrokenBarrierException', 'Broken barrier detected in multithreaded operation', 
+         'java.util.concurrent.BrokenBarrierException\n    at java.base/java.util.concurrent.CyclicBarrier.dowait(CyclicBarrier.java:257)\n    at com.example.myproject.ConcurrencyExample.await(ConcurrencyExample.java:33)\n    at com.example.myproject.Main.main(Main.java:11)')
+    ]
+    
+    # Randomly select a crash scenario
+    crash_scenario = random.choice(crash_scenarios)
+    
+    page_category, page, error_name, error_description, error_metadata = crash_scenario
+    
+    print(f'\tApp Crash Event: {error_name}, Description: {error_description}, Metadata: {error_metadata}')
+    
+    # Call the appCrash function with the selected scenario
+    appCrash(driver, page_category, page, error_name, error_description, error_metadata)
 
-    if scenario_type == 'login_only':
-        print("\tScenario: Login Only")
-        generate_login_result(driver)
-        # Generate a few API call results after login
-        for _ in range(random.randint(1, 3)):  # Send 1 to 3 API calls
-            generate_api_result(driver)
+def generate_app_error(driver):
+    """Randomly generate an app error event with realistic error details."""
+    
+    error_scenarios = [
+        # (pageCategory, page, errorName, errorDescription, errorMetadata)
+        ('fetchData', '/data/fetch', 'NetworkError', 'Failed to fetch data from server', 
+         'java.net.ConnectException: Connection refused\n    at java.base/java.net.PlainSocketImpl.socketConnect(PlainSocketImpl.java:107)\n    at java.base/java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)\n    at com.example.myproject.DataFetcher.fetchData(DataFetcher.java:45)\n    at com.example.myproject.MainActivity.loadData(MainActivity.java:88)'),
+        
+        ('loginAttempt', '/login', 'AuthenticationError', 'Invalid credentials provided', 
+         'java.lang.SecurityException: Invalid credentials\n    at com.example.myproject.AuthenticationManager.authenticate(AuthenticationManager.java:54)\n    at com.example.myproject.LoginActivity.attemptLogin(LoginActivity.java:112)'),
+        
+        ('saveSettings', '/settings/save', 'DatabaseError', 'Failed to save settings to the database', 
+         'java.sql.SQLException: Unable to insert record into settings table\n    at com.example.myproject.DatabaseManager.saveSettings(DatabaseManager.java:67)\n    at com.example.myproject.SettingsActivity.save(SettingsActivity.java:53)'),
+        
+        ('syncData', '/data/sync', 'TimeoutError', 'Data synchronization timed out', 
+         'java.util.concurrent.TimeoutException: Synchronization operation timed out\n    at com.example.myproject.SyncManager.syncData(SyncManager.java:98)\n    at com.example.myproject.SyncService.startSync(SyncService.java:45)'),
+        
+        ('loadProfile', '/profile/load', 'ParsingError', 'Failed to parse user profile data', 
+         'java.lang.NumberFormatException: For input string: "abc123"\n    at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)\n    at com.example.myproject.ProfileParser.parse(ProfileParser.java:32)\n    at com.example.myproject.ProfileActivity.loadProfile(ProfileActivity.java:77)'),
+        
+        ('fetchRecommendations', '/recommendations/fetch', 'APILimitExceededError', 'API rate limit exceeded', 
+         'java.lang.Exception: API rate limit exceeded\n    at com.example.myproject.ApiClient.handleResponse(ApiClient.java:122)\n    at com.example.myproject.RecommendationService.fetchRecommendations(RecommendationService.java:66)'),
+        
+        ('backgroundTask', '/task/execute', 'TaskExecutionError', 'Background task failed to complete', 
+         'java.lang.Exception: Task execution failed\n    at com.example.myproject.TaskExecutor.execute(TaskExecutor.java:89)\n    at com.example.myproject.BackgroundService.runTask(BackgroundService.java:39)'),
+        
+        ('uploadData', '/data/upload', 'FileUploadError', 'Error occurred while uploading file', 
+         'java.io.IOException: Failed to upload file due to network issues\n    at com.example.myproject.UploadManager.uploadFile(UploadManager.java:57)\n    at com.example.myproject.FileUploadActivity.upload(FileUploadActivity.java:46)'),
+        
+        ('loadData', '/data/load', 'DataProcessingError', 'Error while processing loaded data', 
+         'java.lang.IllegalArgumentException: Invalid data format received\n    at com.example.myproject.DataProcessor.process(DataProcessor.java:29)\n    at com.example.myproject.DataLoader.load(DataLoader.java:42)'),
+        
+        ('initService', '/service/init', 'ServiceInitializationError', 'Failed to initialize the required service', 
+         'java.lang.IllegalStateException: Service initialization failed due to missing dependencies\n    at com.example.myproject.ServiceManager.initService(ServiceManager.java:36)\n    at com.example.myproject.MainActivity.startService(MainActivity.java:52)'),
+        
+        ('apiCall', '/api/call', 'ResponseParsingError', 'Failed to parse response from API call', 
+         'java.lang.Exception: Unexpected response format\n    at com.example.myproject.ApiClient.parseResponse(ApiClient.java:78)\n    at com.example.myproject.ApiService.makeCall(ApiService.java:41)'),
+        
+        ('dataBackup', '/backup/data', 'BackupError', 'Error during data backup operation', 
+         'java.io.IOException: Data backup failed due to insufficient storage\n    at com.example.myproject.BackupManager.performBackup(BackupManager.java:34)\n    at com.example.myproject.BackupService.startBackup(BackupService.java:22)'),
+        
+        ('fileProcessing', '/file/process', 'FileProcessingError', 'Error processing the file', 
+         'java.nio.file.FileSystemException: Failed to process file: access denied\n    at com.example.myproject.FileProcessor.process(FileProcessor.java:58)\n    at com.example.myproject.FileService.run(FileService.java:27)'),
+        
+        ('updateProfile', '/profile/update', 'ValidationError', 'User profile validation failed', 
+         'java.lang.IllegalArgumentException: Invalid user profile details\n    at com.example.myproject.ProfileValidator.validate(ProfileValidator.java:44)\n    at com.example.myproject.ProfileService.updateProfile(ProfileService.java:19)'),
+        
+        ('refreshToken', '/auth/refresh', 'TokenRefreshError', 'Failed to refresh authentication token', 
+         'java.lang.SecurityException: Token refresh failed due to invalid session\n    at com.example.myproject.AuthManager.refreshToken(AuthManager.java:62)\n    at com.example.myproject.TokenService.refresh(TokenService.java:34)'),
+        
+        ('initializeComponent', '/component/init', 'ComponentLoadError', 'Failed to load required component', 
+         'java.lang.NoClassDefFoundError: Component class not found\n    at com.example.myproject.ComponentLoader.load(ComponentLoader.java:51)\n    at com.example.myproject.ComponentService.init(ComponentService.java:23)'),
+        
+        ('uploadImage', '/image/upload', 'ImageUploadError', 'Error occurred while uploading image', 
+         'java.io.IOException: Failed to upload image due to server error\n    at com.example.myproject.ImageUploadManager.uploadImage(ImageUploadManager.java:46)\n    at com.example.myproject.ImageService.upload(ImageService.java:32)'),
+        
+        ('syncSettings', '/settings/sync', 'SettingsSyncError', 'Error during settings synchronization', 
+         'java.lang.Exception: Settings synchronization failed\n    at com.example.myproject.SettingsManager.sync(SettingsManager.java:64)\n    at com.example.myproject.SyncService.performSync(SyncService.java:28)'),
+        
+        ('downloadContent', '/content/download', 'ContentDownloadError', 'Error downloading content', 
+         'java.io.IOException: Content download failed due to interrupted connection\n    at com.example.myproject.DownloadManager.download(DownloadManager.java:79)\n    at com.example.myproject.ContentService.download(ContentService.java:45)'),
+        
+        ('loadDashboard', '/dashboard/load', 'DashboardLoadError', 'Error occurred while loading dashboard', 
+         'java.lang.Exception: Dashboard data is incomplete\n    at com.example.myproject.DashboardLoader.load(DashboardLoader.java:22)\n    at com.example.myproject.DashboardActivity.display(DashboardActivity.java:31)'),
+        
+        ('processOrder', '/order/process', 'OrderProcessingError', 'Error occurred while processing order', 
+         'java.lang.IllegalArgumentException: Invalid order details provided\n    at com.example.myproject.OrderProcessor.process(OrderProcessor.java:37)\n    at com.example.myproject.OrderService.execute(OrderService.java:24)'),
+        
+        ('generateReport', '/report/generate', 'ReportGenerationError', 'Error occurred during report generation', 
+         'java.io.IOException: Report generation failed due to file write error\n    at com.example.myproject.ReportGenerator.generate(ReportGenerator.java:54)\n    at com.example.myproject.ReportService.create(ReportService.java:41)'),
+        
+        ('saveDraft', '/draft/save', 'DraftSaveError', 'Failed to save draft', 
+         'java.io.IOException: Draft save failed due to disk space issues\n    at com.example.myproject.DraftManager.save(DraftManager.java:18)\n    at com.example.myproject.DraftService.save(DraftService.java:29)'),
+        
+        ('syncContacts', '/contacts/sync', 'ContactsSyncError', 'Error during contacts synchronization', 
+         'java.lang.Exception: Contacts synchronization failed\n    at com.example.myproject.ContactsManager.sync(ContactsManager.java:38)\n    at com.example.myproject.ContactsService.performSync(ContactsService.java:47)'),
+        
+        ('initializeSession', '/session/init', 'SessionInitializationError', 'Failed to initialize user session', 
+         'java.lang.IllegalStateException: Session initialization failed due to invalid state\n    at com.example.myproject.SessionManager.initialize(SessionManager.java:26)\n    at com.example.myproject.SessionService.start(SessionService.java:32)'),
+        
+        ('loadPreferences', '/preferences/load', 'PreferencesLoadError', 'Error occurred while loading user preferences', 
+         'java.lang.Exception: Failed to load user preferences from storage\n    at com.example.myproject.PreferencesLoader.load(PreferencesLoader.java:21)\n    at com.example.myproject.PreferencesService.load(PreferencesService.java:14)')
+    ]
+    
+    # Randomly select an error scenario
+    error_scenario = random.choice(error_scenarios)
+    
+    page_category, page, error_name, error_description, error_metadata = error_scenario
+    
+    print(f'\tApp Error Event: {error_name}, Description: {error_description}, Metadata: {error_metadata}')
+    
+    # Call the appError function with the selected scenario
+    appError(driver, page_category, page, error_name, error_description, error_metadata)
 
-    elif scenario_type == 'signup_only':
-        print("\tScenario: Signup Only")
-        generate_signup_result(driver)
-        # Generate a few API call results after signup
-        for _ in range(random.randint(1, 3)):  # Send 1 to 3 API calls
-            generate_api_result(driver)
-
-    elif scenario_type == 'signup_then_login':
-        print("\tScenario: Signup then Login")
-        generate_signup_result(driver)
-        time.sleep(1)
-        generate_login_result(driver)
-        # Generate a few API call results after signup and login
-        for _ in range(random.randint(1, 5)):  # Send 1 to 5 API calls
-            generate_api_result(driver)
-
-    elif scenario_type == 'login_then_signup':
-        print("\tScenario: Login then Signup")
-        generate_login_result(driver)
-        time.sleep(1)
-        generate_signup_result(driver)
-        # Generate a few API call results after login and signup
-        for _ in range(random.randint(1, 5)):  # Send 1 to 5 API calls
-            generate_api_result(driver)
+def generate_app_ui_error(driver):
+    """Randomly generate a UI error event with realistic error details."""
+    
+    ui_error_scenarios = [
+        # (pageCategory, page, errorName, errorDescription, uiErrorHeader, uiErrorBody)
+        ("loginPage", "/login", "InvalidCredentials", "User provided invalid login credentials", 
+         "Login Failed", "The email or password you entered is incorrect. Please try again."),
+        
+        ("loginPage", "/login", "AccountLocked", "User account is locked due to multiple failed login attempts", 
+         "Account Locked", "Your account has been locked due to too many failed login attempts. Please reset your password."),
+        
+        ("checkout", "/checkout", "PaymentDeclined", "User payment method was declined by the bank", 
+         "Payment Error", "Your payment was declined. Please use a different payment method."),
+        
+        ("settings", "/settings/profile", "ProfileUpdateFailed", "Failed to update user profile information", 
+         "Profile Update Error", "There was an error updating your profile. Please check your details and try again."),
+        
+        ("registration", "/signup", "EmailAlreadyUsed", "User attempted to register with an already used email address", 
+         "Registration Error", "This email address is already associated with another account. Please use a different email."),
+        
+        ("forgotPassword", "/password/reset", "EmailNotFound", "User attempted to reset password for an email that does not exist", 
+         "Reset Password Error", "The email address you entered does not match our records. Please check and try again."),
+        
+        ("checkout", "/checkout", "InsufficientFunds", "User has insufficient funds for the transaction", 
+         "Payment Declined", "Your card was declined due to insufficient funds. Please use a different payment method."),
+        
+        ("checkout", "/checkout", "InvalidCardNumber", "User provided an invalid card number", 
+         "Invalid Card Number", "The card number you entered is invalid. Please check the number and try again."),
+        
+        ("settings", "/settings/preferences", "PreferenceUpdateFailed", "Failed to save user preferences", 
+         "Update Failed", "We could not save your preferences. Please try again later."),
+        
+        ("content", "/content/view", "ContentNotAvailable", "Requested content is not available in the user’s region", 
+         "Content Unavailable", "This content is not available in your region. Please choose another title."),
+        
+        ("streaming", "/stream/start", "StreamTimeout", "Streaming failed to start due to a timeout", 
+         "Streaming Error", "We couldn’t start the stream. Please check your connection and try again."),
+        
+        ("streaming", "/stream/start", "UnsupportedFormat", "User attempted to stream content in an unsupported format", 
+         "Format Not Supported", "The content you are trying to view is not supported on your device."),
+        
+        ("loginPage", "/login", "CaptchaRequired", "Captcha verification is required for login", 
+         "Captcha Required", "Please complete the captcha verification to proceed with login."),
+        
+        ("checkout", "/checkout", "AddressInvalid", "Shipping address provided by user is invalid", 
+         "Invalid Address", "The shipping address you provided is invalid. Please check and enter a valid address."),
+        
+        ("registration", "/signup", "WeakPassword", "User provided a password that does not meet the required strength", 
+         "Weak Password", "Your password is too weak. Please use a stronger password with a mix of letters, numbers, and symbols."),
+        
+        ("forgotPassword", "/password/reset", "TokenExpired", "Password reset token has expired", 
+         "Token Expired", "Your password reset link has expired. Please request a new one."),
+        
+        ("streaming", "/stream/start", "RegionRestriction", "User attempted to access content restricted in their region", 
+         "Restricted Content", "This content is restricted in your region. Please choose another title."),
+        
+        ("checkout", "/checkout", "CardExpired", "User’s card has expired", 
+         "Card Expired", "The card you entered has expired. Please use a valid card."),
+        
+        ("registration", "/signup", "InvalidEmailFormat", "User provided an email address with an invalid format", 
+         "Invalid Email", "The email address you entered is not valid. Please enter a valid email address."),
+        
+        ("settings", "/settings/account", "AccountDeletionFailed", "Failed to delete user account", 
+         "Deletion Failed", "We could not delete your account at this time. Please try again later."),
+        
+        ("content", "/content/view", "SubscriptionRequired", "User attempted to access content that requires a subscription", 
+         "Subscription Required", "This content requires a subscription. Please subscribe to access."),
+        
+        ("checkout", "/checkout", "CVVIncorrect", "User entered an incorrect CVV number", 
+         "Incorrect CVV", "The CVV number you entered is incorrect. Please check and try again."),
+        
+        ("registration", "/signup", "AgeRestriction", "User attempted to register but did not meet the age requirement", 
+         "Age Restriction", "You do not meet the age requirement to create an account."),
+        
+        ("streaming", "/stream/start", "BandwidthLow", "User’s internet connection is too slow to start streaming", 
+         "Low Bandwidth", "Your internet connection is too slow to stream this content. Please try again later."),
+        
+        ("content", "/content/download", "StorageFull", "User’s device has insufficient storage to download content", 
+         "Insufficient Storage", "Your device does not have enough storage to download this content. Please free up space and try again.")
+    ]
+    
+    # Randomly select a UI error scenario
+    ui_error_scenario = random.choice(ui_error_scenarios)
+    
+    page_category, page, error_name, error_description, ui_error_header, ui_error_body = ui_error_scenario
+    
+    print(f'\tApp UI Error Event: {error_name}, Description: {error_description}, UI Header: {ui_error_header}, UI Body: {ui_error_body}')
+    
+    # Call the appUIError function with the selected scenario
+    appUIError(driver, page_category, page, error_name, error_description, ui_error_header, ui_error_body)
 
 def setup_new_session(driver):
     # Open the Vue.js application running on localhost
@@ -391,6 +630,76 @@ def setup_new_session(driver):
     time.sleep(1)
     
     return driver
+
+# def run_scenario(driver):
+#     """Run a scenario based on random selection."""
+#     scenario_type = random.choice(['login_only', 'login_only', 'login_only', 'login_only', 'signup_only', 'signup_then_login'])
+
+#     if scenario_type == 'login_only':
+#         print("\tScenario: Login Only")
+#         generate_login_result(driver)
+#         # Generate a few API call results after login
+#         for _ in range(random.randint(1, 3)):  # Send 1 to 3 API calls
+#             generate_api_result(driver)
+
+#     elif scenario_type == 'signup_only':
+#         print("\tScenario: Signup Only")
+#         generate_signup_result(driver)
+#         # Generate a few API call results after signup
+#         for _ in range(random.randint(1, 3)):  # Send 1 to 3 API calls
+#             generate_api_result(driver)
+
+#     elif scenario_type == 'signup_then_login':
+#         print("\tScenario: Signup then Login")
+#         generate_signup_result(driver)
+#         time.sleep(1)
+#         generate_login_result(driver)
+#         # Generate a few API call results after signup and login
+#         for _ in range(random.randint(1, 5)):  # Send 1 to 5 API calls
+#             generate_api_result(driver)
+
+#     elif scenario_type == 'login_then_signup':
+#         print("\tScenario: Login then Signup")
+#         generate_login_result(driver)
+#         time.sleep(1)
+#         generate_signup_result(driver)
+#         # Generate a few API call results after login and signup
+#         for _ in range(random.randint(1, 5)):  # Send 1 to 5 API calls
+#             generate_api_result(driver)
+
+def run_scenario(driver):
+    """Run a scenario based on random selection."""
+    scenario_type = random.choice(['login_only', 'login_only', 'login_only', 'login_only', 'signup_only', 'signup_then_login'])
+
+    if scenario_type == 'login_only':
+        print("\tScenario: Login Only")
+        generate_login_result(driver)
+
+    elif scenario_type == 'signup_only':
+        print("\tScenario: Signup Only")
+        generate_signup_result(driver)
+
+    elif scenario_type == 'signup_then_login':
+        print("\tScenario: Signup then Login")
+        generate_signup_result(driver)
+        time.sleep(1)
+        generate_login_result(driver)
+
+    # Generate a few API call results after scenario execution
+    for _ in range(random.randint(1, 5)):  # Send 1 to 5 API calls
+        generate_api_result(driver)
+
+    # Randomly decide if an app crash should happen (10% chance)
+    if random.random() < 0.50:
+        generate_app_crash(driver)
+
+    # Randomly decide if an app error should happen (30% chance)
+    if random.random() < 0.70:
+        generate_app_error(driver)
+
+    # Randomly decide if a UI error should happen (70% chance)
+    if random.random() < 0.90:
+        generate_app_ui_error(driver)
 
 def run_automation_task():
     driver = setup_chrome_driver()

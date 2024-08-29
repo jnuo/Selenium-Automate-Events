@@ -28,7 +28,7 @@ def click_end_session(driver):
         EC.element_to_be_clickable((By.ID, config.BUTTON_END_SESSION))
     )
     # Scroll to the button before clicking it
-    # scroll_to_element(driver, end_session_button)
+    scroll_to_element(driver, end_session_button)
     end_session_button.click()
     print("\tClicked the 'End Session' button.")
 
@@ -72,7 +72,7 @@ def appError(driver, pageCategory, page, errorName, errorDescription, errorMetad
     """Scrolls to the 'Session Begin' section."""
     scroll_to_text(driver, config.TEXT_APP_ERROR)
     time.sleep(1)
-    update_input_value(driver, "appCrashEventDimensionValue1", pageCategory)
+    update_input_value(driver, "appErrorEventDimensionValue1", pageCategory)
     update_input_value(driver, "appErrorEventDimensionValue2", page)
     update_input_value(driver, "appErrorEventDimensionValue3", errorName)
     update_input_value(driver, "appErrorEventDimensionValue4", errorDescription)
