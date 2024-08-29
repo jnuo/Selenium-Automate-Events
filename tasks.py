@@ -730,10 +730,3 @@ def run_automation_task():
         
         # Close the driver
         driver.quit()
-
-
-
- # Trigger other events
-
-        # appTVPairResult(driver, 'Success', '200', '')
-        # time.sleep(1)
