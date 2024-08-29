@@ -3,7 +3,7 @@ import time
 
 def main():
     """Main function to run the automated tasks repeatedly."""
-    number_of_runs = 5  # Set the number of times you want to run the script
+    number_of_runs = 12345  # Set the number of times you want to run the script
 
     for i in range(number_of_runs):
         run_automation_task()

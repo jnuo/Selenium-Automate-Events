@@ -18,7 +18,34 @@ from utils import(
     select_custom_account_code,
     update_input_value
 )
-from config import LOCALHOST_URL, ANALYTICS_OPTIONS_TEXTAREA_ID, INPUT_ACCOUNT_CODE_ID, CUSTOM_ACCOUNT, VIDEO_ELEMENT_ID
+from config import LOCALHOST_URL, ANALYTICS_OPTIONS_TEXTAREA_ID, INPUT_ACCOUNT_CODE_ID, CUSTOM_ACCOUNT
+
+def setup_new_session(driver):
+    # Open the Vue.js application running on localhost
+    driver.get(LOCALHOST_URL)
+    time.sleep(1)
+
+    # Update analytics options with a random user name
+    update_analytics_options_with_random_user_random_device(driver)
+    time.sleep(1)
+
+    # Ensure the auto session start toggle is turned on
+    toggle_auto_session(driver)
+    time.sleep(1)
+
+    # Choose Account Code: Custom
+    select_custom_account_code(driver)
+    time.sleep(1)
+
+    # Input devyoubora as the Account Code
+    update_input_value(driver, INPUT_ACCOUNT_CODE_ID, CUSTOM_ACCOUNT)
+    time.sleep(1)
+        
+    # Click Fire Navigation button to start a session
+    click_fire_navigation(driver)
+    time.sleep(1)
+    
+    return driver
 
 def select_random_user_name():
     """Generate a pool of user names and select one randomly."""
@@ -66,7 +93,7 @@ def select_random_device():
     selected_device_type, selected_device_code = random.choice(weighted_device_list)
     return selected_device_type, selected_device_code
 
-def update_analytics_options_with_random_user(driver, textarea_id):
+def update_analytics_options_with_random_user_random_device(driver):
     """Update analytics options with a randomly selected user name."""
     selected_user_name = select_random_user_name()
     selected_device_type, selected_device_code = select_random_device()
@@ -86,7 +113,7 @@ def update_analytics_options_with_random_user(driver, textarea_id):
     }
     
     # Update analytics options with the generated JSON data
-    update_analytics_options(driver, textarea_id, json_data)
+    update_analytics_options(driver, ANALYTICS_OPTIONS_TEXTAREA_ID, json_data)
     print(f'{selected_user_name} starts new session on {selected_device_type} & {selected_device_code}')
 
 def generate_login_result(driver):
@@ -149,9 +176,9 @@ def generate_login_result(driver):
     if result[0] == 'Fail':
         retry_chance = random.random()
         if retry_chance <= 0.5:  # 50% chance to retry
-            wait_time = random.randint(2, 10)  # Wait between 2 and 10 seconds before retrying
+            wait_time = random.randint(1, 1)  # Wait between 2 and 10 seconds before retrying
             print(f"\tLogin failed. Waiting {wait_time} seconds before retrying...")
-            time.sleep(wait_time)
+            time.sleep(1)
 
             # 50% chance to succeed on retry
             if random.random() <= 0.5:
@@ -216,7 +243,7 @@ def generate_signup_result(driver):
     if result[0] == 'Fail':
         retry_chance = random.random()
         if retry_chance <= 0.5:  # 50% chance to retry
-            wait_time = random.randint(2, 10)  # Wait between 2 and 10 seconds before retrying
+            wait_time = random.randint(1, 1)  # Wait between 2 and 10 seconds before retrying
             print(f"\tSignup failed. Waiting {wait_time} seconds before retrying...")
             time.sleep(wait_time)
 
@@ -320,13 +347,13 @@ def generate_api_result(driver):
     app_page = result[0]  # This is the URL path or screen name
     response_status = result[1]  # Either "Success" or "Fail"
     api_method_value = result[2]  # Contextual action instead of HTTP method
-    status_code = result[3]  # Status code, typically 200, 404, etc.
+    error_code = result[3]  # Status code, typically 200, 404, etc.
     error_description = result[4]  # Error description or empty string if successful
     
-    print(f'\tAPI Method: {api_method}, App Page: {app_page}, API Action: {api_method_value}, Status: {response_status}, Status Code: {status_code}, Error Description: {error_description}, Response Time: {response_time}ms')
+    print(f'\tAPI Method: {api_method}, App Page: {app_page}, API Action: {api_method_value}, API Response Status: {response_status}, Error Code: {error_code}, Response Time: {response_time}ms')
     
     # Call the appApiResult function with the correct mapping
-    appApiResult(driver, response_time, api_method, app_page, api_method_value, response_status, status_code, error_description)
+    appApiResult(driver, response_time, api_method, app_page, api_method_value, response_status, error_code, error_description)
 
 def generate_app_crash(driver):
     """Randomly generate an app crash event with realistic error details."""
@@ -414,7 +441,7 @@ def generate_app_crash(driver):
     
     page_category, page, error_name, error_description, error_metadata = crash_scenario
     
-    print(f'\tApp Crash Event: {error_name}, Description: {error_description}, Metadata: {error_metadata}')
+    print(f'\tApp Crash Event: {error_name}, Description: {error_description}')
     
     # Call the appCrash function with the selected scenario
     appCrash(driver, page_category, page, error_name, error_description, error_metadata)
@@ -508,7 +535,7 @@ def generate_app_error(driver):
     
     page_category, page, error_name, error_description, error_metadata = error_scenario
     
-    print(f'\tApp Error Event: {error_name}, Description: {error_description}, Metadata: {error_metadata}')
+    print(f'\tApp Error Event: {error_name}, Description: {error_description}')
     
     # Call the appError function with the selected scenario
     appError(driver, page_category, page, error_name, error_description, error_metadata)
@@ -604,68 +631,49 @@ def generate_app_ui_error(driver):
     # Call the appUIError function with the selected scenario
     appUIError(driver, page_category, page, error_name, error_description, ui_error_header, ui_error_body)
 
-def setup_new_session(driver):
-    # Open the Vue.js application running on localhost
-    driver.get(LOCALHOST_URL)
-    time.sleep(1)
-
-    # Update analytics options with a random user name
-    update_analytics_options_with_random_user(driver, ANALYTICS_OPTIONS_TEXTAREA_ID)
-    time.sleep(1)
-
-    # Ensure the auto session start toggle is turned on
-    toggle_auto_session(driver)
-    time.sleep(1)
-
-    # Choose Account Code: Custom
-    select_custom_account_code(driver)
-    time.sleep(1)
-        
-    # Input devyoubora as the Account Code
-    update_input_value(driver, INPUT_ACCOUNT_CODE_ID, CUSTOM_ACCOUNT)
-    time.sleep(1)
-        
-    # Click Fire Navigation button to start a session
-    click_fire_navigation(driver)
-    time.sleep(1)
+def generate_tv_pair_result(driver):
+    """Randomly generate a TV Pairing result with a 60% success rate and 40% failure rate."""
     
-    return driver
-
-# def run_scenario(driver):
-#     """Run a scenario based on random selection."""
-#     scenario_type = random.choice(['login_only', 'login_only', 'login_only', 'login_only', 'signup_only', 'signup_then_login'])
-
-#     if scenario_type == 'login_only':
-#         print("\tScenario: Login Only")
-#         generate_login_result(driver)
-#         # Generate a few API call results after login
-#         for _ in range(random.randint(1, 3)):  # Send 1 to 3 API calls
-#             generate_api_result(driver)
-
-#     elif scenario_type == 'signup_only':
-#         print("\tScenario: Signup Only")
-#         generate_signup_result(driver)
-#         # Generate a few API call results after signup
-#         for _ in range(random.randint(1, 3)):  # Send 1 to 3 API calls
-#             generate_api_result(driver)
-
-#     elif scenario_type == 'signup_then_login':
-#         print("\tScenario: Signup then Login")
-#         generate_signup_result(driver)
-#         time.sleep(1)
-#         generate_login_result(driver)
-#         # Generate a few API call results after signup and login
-#         for _ in range(random.randint(1, 5)):  # Send 1 to 5 API calls
-#             generate_api_result(driver)
-
-#     elif scenario_type == 'login_then_signup':
-#         print("\tScenario: Login then Signup")
-#         generate_login_result(driver)
-#         time.sleep(1)
-#         generate_signup_result(driver)
-#         # Generate a few API call results after login and signup
-#         for _ in range(random.randint(1, 5)):  # Send 1 to 5 API calls
-#             generate_api_result(driver)
+    success_scenarios = [
+        # (tvPairStatus, errorName, errorDescription)
+        ('Success', '', ''),
+        ('Success', '', ''),
+        ('Success', '', ''),
+        ('Success', '', ''),
+        ('Success', '', ''),
+        ('Success', '', ''),
+        ('Success', '', ''),
+        ('Success', '', ''),
+        ('Success', '', ''),
+        ('Success', '', ''),
+    ]
+    
+    failure_scenarios = [
+        # (tvPairStatus, errorName, errorDescription)
+        ('Fail', 'TVPairingTimeout', 'The TV pairing process timed out. Please try again.'),
+        ('Fail', 'InvalidTVCode', 'The TV pairing code entered is invalid.'),
+        ('Fail', 'NetworkError', 'A network error occurred during TV pairing.'),
+        ('Fail', 'TVNotResponding', 'The TV is not responding. Please ensure it is powered on and connected.'),
+        ('Fail', 'PairingRejected', 'The TV rejected the pairing request.'),
+        ('Fail', 'TVPairingFailed', 'The TV pairing process failed due to an unknown error.'),
+        ('Fail', 'IncorrectPIN', 'The PIN entered is incorrect. Please check and try again.'),
+        ('Fail', 'PairingTimeout', 'The pairing session has expired. Please initiate pairing again.'),
+        ('Fail', 'TVNotFound', 'The TV could not be found on the network.'),
+        ('Fail', 'TVPairingCancelled', 'The TV pairing process was cancelled.'),
+    ]
+    
+    # Randomly decide if the result should be a success (60%) or failure (40%)
+    if random.random() < 0.60:
+        result = random.choice(success_scenarios)
+    else:
+        result = random.choice(failure_scenarios)
+    
+    tv_pair_status, error_name, error_description = result
+    
+    print(f'TV Pair Result: {tv_pair_status}, Error: {error_name}, Description: {error_description}')
+    
+    # Call the appTVPairResult function with the selected scenario
+    appTVPairResult(driver, tv_pair_status, error_name, error_description)
 
 def run_scenario(driver):
     """Run a scenario based on random selection."""
@@ -690,16 +698,20 @@ def run_scenario(driver):
         generate_api_result(driver)
 
     # Randomly decide if an app crash should happen (10% chance)
-    if random.random() < 0.50:
+    if random.random() < 0.85:
         generate_app_crash(driver)
 
     # Randomly decide if an app error should happen (30% chance)
-    if random.random() < 0.70:
+    for _ in range(random.randint(1, 2)):  # Send 1 to 5 API calls
         generate_app_error(driver)
 
     # Randomly decide if a UI error should happen (70% chance)
-    if random.random() < 0.90:
+    for _ in range(random.randint(1, 4)):  # Send 1 to 5 API calls
         generate_app_ui_error(driver)
+
+    # Randomly decide if a TV Pair error should happen (60% chance)
+    if random.random() < 0.40:
+        generate_tv_pair_result(driver)
 
 def run_automation_task():
     driver = setup_chrome_driver()
@@ -722,39 +734,6 @@ def run_automation_task():
 
 
  # Trigger other events
-
-        # appCrash(driver, 'signup', '/app/signup.aspx', 'java.lang.NullPointerException', 'Object not set to an instance of an object', '''
-        #             Exception in thread "main" java.lang.NullPointerException
-        #                 at com.example.myproject.Book.getTitle(Book.java:16)        
-        #                 at com.example.myproject.Author.getBookTitles(Author.java:25)        
-        #                 at com.example.myproject.Bootstrap.main(Bootstrap.java:14)
-        #             '''
-        # )
-        # time.sleep(1)
-
-        # appError(driver,
-        #             'signup',
-        #             '/app/signup.aspx',
-        #             'java.lang.NullPointerException',
-        #             'Object not set to an instance of an object',
-        #             '''
-        #             Exception in thread "main" java.lang.NullPointerException
-        #                 at com.example.myproject.Book.getTitle(Book.java:16)       
-        #                 at com.example.myproject.Author.getBookTitles(Author.java:25)
-        #                 at com.example.myproject.Bootstrap.main(Bootstrap.java:14)
-        #             '''
-        # )
-        # time.sleep(1)
-
-        # appUIError(driver,
-        #            'signup',
-        #            '/app/login.aspx',
-        #            'password-incorrect',
-        #            'the password not match the username',
-        #            'Incorrect Password',
-        #            'The password you have entered does not match with the email address. Please check your password and try again.'
-        # )
-        # time.sleep(1)
 
         # appTVPairResult(driver, 'Success', '200', '')
         # time.sleep(1)
