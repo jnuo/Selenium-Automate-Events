@@ -12,6 +12,11 @@ def setup_chrome_driver():
     """Sets up the Chrome WebDriver with necessary options and returns the driver."""
     chrome_options = Options()
     chrome_options.add_argument(f"user-data-dir={config.CHROME_PROFILE_PATH}")
+    # chrome_options.add_argument("--headless")  # Run in headless mode
+    # chrome_options.add_argument("--disable-gpu")  # Disable GPU acceleration
+    # chrome_options.add_argument("--window-size=1920,1080")  # Set window size to avoid issues with headless mode
+    # chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
+    # chrome_options.add_argument("--no-sandbox")  # Bypass OS security model
 
     # Set up the webdriver
     service = Service(executable_path=config.CHROMEDRIVER_PATH)
@@ -149,10 +154,9 @@ def toggle_auto_session(driver, should_enable=True):
 
     if is_checked != should_enable:
         checkbox.click()
-        print(f"\tAuto session toggled to {'enabled' if should_enable else 'disabled'}.")
-    else:
-        print(f"\tAuto session already {'enabled' if should_enable else 'disabled'}.")
-
+        # print(f"\tAuto session toggled to {'enabled' if should_enable else 'disabled'}.")
+    # else:
+        # print(f"\tAuto session already {'enabled' if should_enable else 'disabled'}.")
 
 def play_and_pause_video(driver, video_id, play_time):
     """Scrolls to the video section, plays the video for a specified time, and then pauses it."""
@@ -173,4 +177,4 @@ def click_button(driver, button_id):
         EC.presence_of_element_located((By.ID, button_id))
     )
     driver.execute_script("arguments[0].click();", button)
-    time.sleep(3)
+    time.sleep(1)

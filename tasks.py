@@ -27,13 +27,55 @@ def select_random_user_name():
     selected_user_name = random.choice(user_names)
     return selected_user_name
 
+def select_random_device():
+    """Select a random device type and device code based on the play distribution."""
+    device_play_distribution = [
+        ("SmartPhone", "Android", 35000),
+        ("PC", "PCWindows", 30234),
+        ("SmartPhone", "iPhone", 30000),
+        ("STB", "AndroidTV", 25000),
+        ("Tablet", "AndroidTablet", 21961),
+        ("PC", "PCMac", 8215),
+        ("TV", "LG", 3135),
+        ("Tablet", "iPad", 2759),
+        ("SmartPhone", "Android", 2653),
+        ("TV", "SamsungTizen", 2502),
+        ("Fire TV", "FireTV", 1239),
+        ("TV", "Hisense", 1028),
+        ("TV", "Roku3", 769),
+        ("PC", "PCLinux", 722),
+        ("Android TV", "SonyBravia", 427),
+        ("Android TV", "Chromecast", 422),
+        ("PC", "ChromeOS", 325),
+        ("STB", "Android", 279),
+        ("Tablet", "AndroidTablet", 154),
+        ("TV", "Chromecast", 85),
+        ("Fire TV", "Toshiba_STV", 25),
+        ("STB", "Xiaomi", 24),
+        ("Android TV", "Xiaomi", 19),
+        ("STB", "PCLinux", 7),
+        ("Tablet", "Hisense", 5),
+        ("Fire TV", "Android", 4)
+    ]
+
+    # Create a weighted list of device type and device code pairs
+    weighted_device_list = []
+    for device_type, device_code, plays in device_play_distribution:
+        weighted_device_list.extend([(device_type, device_code)] * plays)
+
+    # Randomly select a device type and code pair from the weighted list
+    selected_device_type, selected_device_code = random.choice(weighted_device_list)
+    return selected_device_type, selected_device_code
+
 def update_analytics_options_with_random_user(driver, textarea_id):
     """Update analytics options with a randomly selected user name."""
     selected_user_name = select_random_user_name()
-    
-    # JSON data with the randomly selected user name
+    selected_device_type, selected_device_code = select_random_device()
+  
     json_data = {
         "app.name": "Web Testing Tool - Multiplayer App",
+        "device.code": selected_device_code,
+        "device.type": selected_device_type,
         "app.releaseVersion": "1.1.2",
         "user.name": selected_user_name,
         "content.title": "Custom Title - Analytics Options",
@@ -46,7 +88,7 @@ def update_analytics_options_with_random_user(driver, textarea_id):
     
     # Update analytics options with the generated JSON data
     update_analytics_options(driver, textarea_id, json_data)
-    print(f'Starting new session with User ID: {selected_user_name}...')
+    print(f'{selected_user_name} starts new session on {selected_device_type} & {selected_device_code}')
 
 def generate_login_result(driver):
     """Randomly generate a login result ensuring at least 85% success rate."""
@@ -273,7 +315,7 @@ def generate_api_result(driver):
     else:  # 25% chance to select a failure scenario
         result = random.choice(failure_scenarios[api_method])
     
-    response_time = random.randint(10, 100)  # Generate a random response time
+    response_time = random.randint(10, 1250)  # Generate a random response time
     
     # Map the correct parameters
     app_page = result[0]  # This is the URL path or screen name
@@ -295,64 +337,65 @@ def run_scenario(driver):
         print("\tScenario: Login Only")
         generate_login_result(driver)
         # Generate a few API call results after login
-        for _ in range(random.randint(2, 8)):  # Send 1 to 3 API calls
+        for _ in range(random.randint(1, 3)):  # Send 1 to 3 API calls
             generate_api_result(driver)
 
     elif scenario_type == 'signup_only':
         print("\tScenario: Signup Only")
         generate_signup_result(driver)
         # Generate a few API call results after signup
-        for _ in range(random.randint(2, 8)):  # Send 1 to 3 API calls
+        for _ in range(random.randint(1, 3)):  # Send 1 to 3 API calls
             generate_api_result(driver)
 
     elif scenario_type == 'signup_then_login':
         print("\tScenario: Signup then Login")
         generate_signup_result(driver)
-        time.sleep(2)
+        time.sleep(1)
         generate_login_result(driver)
         # Generate a few API call results after signup and login
-        for _ in range(random.randint(2, 8)):  # Send 1 to 3 API calls
+        for _ in range(random.randint(1, 5)):  # Send 1 to 5 API calls
             generate_api_result(driver)
 
     elif scenario_type == 'login_then_signup':
         print("\tScenario: Login then Signup")
         generate_login_result(driver)
-        time.sleep(2)
+        time.sleep(1)
         generate_signup_result(driver)
         # Generate a few API call results after login and signup
-        for _ in range(random.randint(2, 8)):  # Send 1 to 3 API calls
+        for _ in range(random.randint(1, 5)):  # Send 1 to 5 API calls
             generate_api_result(driver)
 
+def setup_new_session(driver):
+    # Open the Vue.js application running on localhost
+    driver.get(LOCALHOST_URL)
+    time.sleep(1)
+
+    # Update analytics options with a random user name
+    update_analytics_options_with_random_user(driver, ANALYTICS_OPTIONS_TEXTAREA_ID)
+    time.sleep(1)
+
+    # Ensure the auto session start toggle is turned on
+    toggle_auto_session(driver)
+    time.sleep(1)
+
+    # Choose Account Code: Custom
+    select_custom_account_code(driver)
+    time.sleep(1)
+        
+    # Input devyoubora as the Account Code
+    update_input_value(driver, INPUT_ACCOUNT_CODE_ID, CUSTOM_ACCOUNT)
+    time.sleep(1)
+        
+    # Click Fire Navigation button to start a session
+    click_fire_navigation(driver)
+    time.sleep(1)
+    
+    return driver
 
 def run_automation_task():
-    """Run the automation task once."""
     driver = setup_chrome_driver()
-
     try:
-        # Open the Vue.js application running on localhost
-        driver.get(LOCALHOST_URL)
-        time.sleep(1)
-
-        # Update analytics options with a random user name
-        update_analytics_options_with_random_user(driver, ANALYTICS_OPTIONS_TEXTAREA_ID)
-        time.sleep(1)
-
-        # Ensure the auto session start toggle is turned on
-        toggle_auto_session(driver)
-        time.sleep(1)
-
-        # Choose Account Code: Custom
-        select_custom_account_code(driver)
-        time.sleep(1)
-        
-        # Input devyoubora as the Account Code
-        update_input_value(driver, INPUT_ACCOUNT_CODE_ID, CUSTOM_ACCOUNT)
-        time.sleep(1)
-        
-        # Click Fire Navigation button to start a session
-        click_fire_navigation(driver)
-        time.sleep(1)
-        
+        setup_new_session(driver)
         run_scenario(driver)
         time.sleep(1)
 
@@ -366,6 +409,8 @@ def run_automation_task():
         
         # Close the driver
         driver.quit()
+
+
 
  # Trigger other events
 
