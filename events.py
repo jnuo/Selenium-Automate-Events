@@ -24,12 +24,12 @@ def click_fire_navigation(driver):
 def click_end_session(driver):
     """Clicks the 'End Session' button by its ID after scrolling into view."""
     scroll_to_text(driver, "App Analytics Session Events")
-    WebDriverWait(driver, 2).until(EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'App Analytics Session Events')]")))
     end_session_button = WebDriverWait(driver, 20).until(
         EC.element_to_be_clickable((By.ID, config.BUTTON_END_SESSION))
     )
     # Scroll to the button before clicking it
     scroll_to_element(driver, end_session_button)
+    time.sleep(1)
     end_session_button.click()
     print("\tClicked the 'End Session' button.")
 
