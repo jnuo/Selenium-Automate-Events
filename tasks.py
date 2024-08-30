@@ -670,7 +670,7 @@ def generate_tv_pair_result(driver):
     
     tv_pair_status, error_name, error_description = result
     
-    print(f'TV Pair Result: {tv_pair_status}, Error: {error_name}, Description: {error_description}')
+    print(f'\tTV Pair Result: {tv_pair_status}, Error: {error_name}, Description: {error_description}')
     
     # Call the appTVPairResult function with the selected scenario
     appTVPairResult(driver, tv_pair_status, error_name, error_description)
