@@ -5,7 +5,7 @@ def main():
     """Main function to run the automated tasks indefinitely."""
     run_count = 0  # Initialize a run counter
     sleep_time = 2  # Initial sleep time after an exception
-    max_sleep_time = 300  # Maximum sleep time (5 minutes)
+    max_sleep_time = 60  # Maximum sleep time (a minute)
 
     while True:
         try:
