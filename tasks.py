@@ -23,33 +23,28 @@ from config import LOCALHOST_URL, ANALYTICS_OPTIONS_TEXTAREA_ID, INPUT_ACCOUNT_C
 def setup_new_session(driver):
     # Open the Vue.js application running on localhost
     driver.get(LOCALHOST_URL)
-    time.sleep(1)
 
     # Update analytics options with a random user name
     update_analytics_options_with_random_user_random_device(driver)
-    time.sleep(1)
 
     # Ensure the auto session start toggle is turned on
     toggle_auto_session(driver)
-    time.sleep(1)
 
     # Choose Account Code: Custom
     select_custom_account_code(driver)
-    time.sleep(1)
 
     # Input devyoubora as the Account Code
     update_input_value(driver, INPUT_ACCOUNT_CODE_ID, CUSTOM_ACCOUNT)
-    time.sleep(1)
         
     # Click Fire Navigation button to start a session
     click_fire_navigation(driver)
-    time.sleep(1)
     
     return driver
 
+
 def select_random_user_name():
     """Generate a pool of user names and select one randomly."""
-    user_names = [f"User {i}" for i in range(1, 94)]
+    user_names = [f"User {i}" for i in range(1, 9999)]
     selected_user_name = random.choice(user_names)
     return selected_user_name
 
@@ -176,10 +171,6 @@ def generate_login_result(driver):
     if result[0] == 'Fail':
         retry_chance = random.random()
         if retry_chance <= 0.5:  # 50% chance to retry
-            wait_time = random.randint(1, 1)  # Wait between 2 and 10 seconds before retrying
-            print(f"\tLogin failed. Waiting {wait_time} seconds before retrying...")
-            time.sleep(1)
-
             # 50% chance to succeed on retry
             if random.random() <= 0.5:
                 success_result = random.choice(success_scenarios)
@@ -243,10 +234,6 @@ def generate_signup_result(driver):
     if result[0] == 'Fail':
         retry_chance = random.random()
         if retry_chance <= 0.5:  # 50% chance to retry
-            wait_time = random.randint(1, 1)  # Wait between 2 and 10 seconds before retrying
-            print(f"\tSignup failed. Waiting {wait_time} seconds before retrying...")
-            time.sleep(wait_time)
-
             # 50% chance to succeed on retry
             if random.random() <= 0.5:
                 success_result = random.choice(success_scenarios)
@@ -690,7 +677,6 @@ def run_scenario(driver):
     elif scenario_type == 'signup_then_login':
         print("\tScenario: Signup then Login")
         generate_signup_result(driver)
-        time.sleep(1)
         generate_login_result(driver)
 
     # Generate a few API call results after scenario execution
@@ -718,7 +704,6 @@ def run_automation_task():
     try:
         setup_new_session(driver)
         run_scenario(driver)
-        time.sleep(1)
 
     except Exception as e:
         # Print the error to the console

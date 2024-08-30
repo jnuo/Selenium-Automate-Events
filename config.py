@@ -13,7 +13,7 @@ ACCOUNT_CODE_DROPDOWN_ID = "account-code-dropdown"
 CUSTOM_OPTION_XPATH = "//ul[contains(@class, 'dropdown-menu show')]//button[text()='Custom']"
 AUTO_SESSION_CHECKBOX_ID = "autoSessionCheckbox"
 INPUT_ACCOUNT_CODE_ID = "input-account-code"
-CUSTOM_ACCOUNT = "devyoubora"
+CUSTOM_ACCOUNT = "npawsuite_demo"
 ANALYTICS_OPTIONS_TEXTAREA_ID = "textarea"
 
 # CUSTOM_ACCOUNT = "root"
