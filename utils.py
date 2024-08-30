@@ -100,6 +100,25 @@ def update_input_value(driver, input_id, value):
         # Optionally, trigger the 'input' event if required by the application logic
         driver.execute_script(f"document.getElementById('{input_id}').dispatchEvent(new Event('input'));")
 
+def update_numeric_input_value(driver, input_id, numeric_value):
+    """Updates the value of the input field with the given ID, ensuring it's treated as a number."""
+    input_field = WebDriverWait(driver, 20).until(
+        EC.presence_of_element_located((By.ID, input_id))
+    )
+    
+    scroll_to_element(driver, input_field)
+    WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.ID, input_id)))
+    
+    # Clear any existing text in the input field
+    input_field.clear()
+
+    # Ensure the numeric_value is treated as a number
+    driver.execute_script(f"document.getElementById('{input_id}').value = {numeric_value};")
+    
+    # Optionally, trigger the 'input' event if required by the application logic
+    driver.execute_script(f"document.getElementById('{input_id}').dispatchEvent(new Event('input'));")
+
+
 def toggle_auto_session(driver, should_enable=True):
     """Toggles the auto session switch based on the desired state."""
     checkbox = WebDriverWait(driver, 10).until(

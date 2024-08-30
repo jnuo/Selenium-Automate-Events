@@ -3,7 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import config
-from utils import scroll_to_text, update_input_value, click_button, changeTextArea, scroll_to_element
+from utils import scroll_to_text, update_input_value, update_numeric_input_value, click_button, changeTextArea, scroll_to_element
 
 # Change the textarea value
 def update_analytics_options(driver, textarea_id, new_text):
@@ -45,7 +45,7 @@ def appApiResult(driver, responseTime, pageCategory, page, apiMethod, responseSt
     """Scrolls to the 'Session Begin' section."""
     scroll_to_text(driver, config.TEXT_APP_API_RESULT)
     WebDriverWait(driver, 2).until(EC.presence_of_element_located((By.XPATH, f"//*[contains(text(), '{config.TEXT_APP_API_RESULT}')]")))
-    update_input_value(driver, "apiEventValue1", str(responseTime))
+    update_numeric_input_value(driver, "apiEventValue1", responseTime)
     update_input_value(driver, "apiEventDimensionValue1", pageCategory)
     update_input_value(driver, "apiEventDimensionValue2", page)
     update_input_value(driver, "apiEventDimensionValue3", apiMethod)
